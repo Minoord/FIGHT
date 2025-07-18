@@ -1,4 +1,5 @@
 using PoolSystems;
+using UnityEngine;
 
 namespace Ability.Weapons.Bullets
 {
@@ -19,14 +20,21 @@ namespace Ability.Weapons.Bullets
             }
         }
 
-        public void Spawn(int damage)
+        public bool TrySpawn(int damage, Transform transform)
         {
-            Spawn(out IPoolEntity entity);
+            if (!TrySpawn(out IPoolEntity entity))
+            {
+                return false;  
+            }
 
             if (entity is Bullet bullet)
             {
                 bullet.Damage = damage;
+                bullet.transform.position = transform.position;
+                bullet.transform.rotation = transform.rotation;
             }
+            
+            return true;
         }
     }
 }

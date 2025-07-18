@@ -8,15 +8,20 @@ namespace PlayerController
 {
     public class PlayerController : MonoBehaviour
     {
+        [SerializeField] private Transform _barrelGunTransform;
+        
         private readonly HealthManager _healthManager = new();
-        private IAbility _primaryAbility = new Gun();
+        private Gun _primaryAbility = new();
         private InputAction _shootAction;
 
         private const float _startHealth = 10;
+        private const int _startDamage = 1;
+        [SerializeField] private int _startAttackSpeed = 1;
 
         private void Start()
         {
             _healthManager.SetHealth(_startHealth);
+            _primaryAbility.Init(_barrelGunTransform, _startDamage, _startAttackSpeed);
             InputManager.SubscribeToAction("Shoot", Shoot, out _shootAction);
         }
 

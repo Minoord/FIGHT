@@ -8,6 +8,7 @@ namespace PoolSystems
     {
         [SerializeField] private AssetReference _prefabReference;
         
+        private bool _isInstantiated;
         private GameObject _prefab;
         private List<GameObject> _activePrefabs = new();
         private List<IPoolEntity> _deActivePrefabs = new();
@@ -20,6 +21,7 @@ namespace PoolSystems
 
             if (_prefab)
             {
+                _isInstantiated = true;
                 return;
             }
             
@@ -29,11 +31,19 @@ namespace PoolSystems
 
         protected abstract void SetInstance();
 
-        public void Spawn(out IPoolEntity newEntity)
+        public bool TrySpawn(out IPoolEntity newEntity)
         {
+            newEntity = null;
+            
+            if (!_isInstantiated)
+            {
+                return false;
+            }
+            
             if (_deActivePrefabs.Count > 0)
             {
                 newEntity = _deActivePrefabs[0];
+                newEntity.Reset();
                 newEntity.SetActive(true);
                 
                 _deActivePrefabs.RemoveAt(0);
@@ -44,11 +54,12 @@ namespace PoolSystems
                 if (!Instantiate(_prefab, transform).TryGetComponent(out newEntity))
                 {
                     Debug.LogError($"Cannot spawn bullet asset: {_prefabReference}. Couldn't find IPoolEntity");
-                    return;
+                    return false;
                 }
             }
 
             newEntity.OnDespawn += Despawn;
+            return true;
         }
 
         private void Despawn(IPoolEntity poolEntity)

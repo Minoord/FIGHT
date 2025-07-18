@@ -8,6 +8,13 @@ namespace Ability.Weapons
     public class Gun : Weapon
     {
         private bool _isFiring;
+        private Transform _transform;
+
+        public void Init(Transform transform, int newDamage, int newAttackSpeed)
+        {
+            _transform = transform;
+            SetValues(newDamage, newAttackSpeed);
+        }
         
         public override void Use()
         {
@@ -18,11 +25,29 @@ namespace Ability.Weapons
             
             Attack();
         }
+
+        public void SetValues(int? newDamage = null, int? newAttackSpeed = null)
+        {
+            if (newDamage.HasValue)
+            {
+                Damage = newDamage.Value;
+            }
+
+            if (newAttackSpeed.HasValue)
+            {
+                AttackSpeed = newAttackSpeed.Value;
+            }
+
+        }
         
         protected override void Attack()
         {
             _isFiring = true;
-            BulletManager.Instance.Spawn(Damage);
+            if(!BulletManager.Instance.TrySpawn(Damage, _transform))
+            {
+                _isFiring = false;
+                return;
+            }
 
             DrawbackTimer();
         }
