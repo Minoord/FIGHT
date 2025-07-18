@@ -9,7 +9,7 @@ namespace Ability.Weapons.Bullets
     {
         [SerializeField] private float _health;
 
-        private readonly HealthManager _healthManager;
+        private readonly HealthManager _healthManager = new();
         
         public int Damage { private get; set; }
 
