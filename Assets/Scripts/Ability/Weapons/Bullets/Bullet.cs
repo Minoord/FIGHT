@@ -1,11 +1,12 @@
 using System;
 using HealthSystem;
+using PoolSystems;
 using UnityEngine;
 
 namespace Ability.Weapons.Bullets
 {
     [RequireComponent(typeof(Collider2D))]
-    public class Bullet : MonoBehaviour, IPoolEntity
+    public class Bullet : PoolEntity
     {
         [SerializeField] private float _health;
         [SerializeField] private float _speed;
@@ -19,7 +20,7 @@ namespace Ability.Weapons.Bullets
         private void OnEnable()
         {
             _healthManager.SetHealth(_health);
-            _healthManager.OnDied += OnDied;
+            _healthManager.OnDied += OnDiSpawned;
             
         }
 
@@ -31,27 +32,29 @@ namespace Ability.Weapons.Bullets
 
         private void OnDisable()
         {
-            _healthManager.OnDied -= OnDied;
+            _healthManager.OnDied -= OnDiSpawned;
         }
         
-        public Action<IPoolEntity> OnDespawn { get; set; }
+        public override void SetActive(bool active) => gameObject.SetActive(active);
         
-        public void SetActive(bool active) => gameObject.SetActive(active);
-        
-        public void Reset()
+        public override void Reset()
         {
             transform.position = Vector3.zero;
             transform.rotation = new Quaternion();
         }
 
-        private void OnDied() => OnDespawn?.Invoke(this);
-
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Enemy"))
             {
-                //Get Entity from manager
-                _healthManager.TakeDamage(_health);
+                if (!WaveSpawner.Instance.ActivePrefabs.ContainsKey(other.transform) ||  WaveSpawner.Instance.ActivePrefabs[other.transform] is not Entity entity)
+                {
+                    Destroy(other.gameObject);
+                    return;
+                }
+                
+                entity.Damage(Damage);
+               _healthManager.TakeDamage(_health);
             }
         }
     }

@@ -20,6 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c12285afd176bb945aad8cc34f2a6445
+    m_Address: Assets/Prefabs/Entities/Barb.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 90fa6f1b794366241a292bb741ba80aa, type: 2}
   m_SchemaSet:

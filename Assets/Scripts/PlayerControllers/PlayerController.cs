@@ -4,10 +4,12 @@ using Packages.InputSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace PlayerController
+namespace PlayerControllers
 {
     public class PlayerController : MonoBehaviour
     {
+        public static PlayerController Instance;
+        
         [SerializeField] private Transform _barrelGunTransform;
         
         private readonly HealthManager _healthManager = new();
@@ -23,13 +25,26 @@ namespace PlayerController
             _healthManager.SetHealth(_startHealth);
             _primaryAbility.Init(_barrelGunTransform, _startDamage, _startAttackSpeed);
             InputManager.SubscribeToAction("Shoot", Shoot, out _shootAction);
+            
+            if (Instance && Instance != this)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
         }
+        
+        public void Damage(int damage) => _healthManager.TakeDamage(damage);
+        
+        private void Shoot(InputAction.CallbackContext _) => _primaryAbility.Use();
+        
 
         private void OnDestroy()
         {
             InputManager.UnsubscribeToAction(_shootAction, Shoot);
         }
-
-        private void Shoot(InputAction.CallbackContext _) => _primaryAbility.Use();
     }
 }

@@ -1,25 +1,37 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace PoolSystems
 {
-    public abstract class PoolSystem : MonoBehaviour
+    public abstract class PoolSystem<TSystem, TEntity> : MonoBehaviour 
+        where TSystem : PoolSystem<TSystem, TEntity>
+        where TEntity : PoolEntity
     {
-        [SerializeField] private AssetReference _prefabReference;
+        [SerializeField] private List<PrefabInstances> _prefabReference;
         
         private bool _isInstantiated;
-        private GameObject _prefab;
-        private List<GameObject> _activePrefabs = new();
-        private List<IPoolEntity> _deActivePrefabs = new();
+        private Dictionary<string, GameObject> _prefabs = new();
+        private Dictionary<string, List<TEntity>> _deActivePrefabs = new();
+        
+        public Dictionary<Transform, TEntity> ActivePrefabs = new();
+        
+        public static TSystem Instance { get; private set; }
         
         private async void Awake()
         {
             SetInstance();
-            
-            _prefab = await Addressables.LoadAssetAsync<GameObject>(_prefabReference).Task;
 
-            if (_prefab)
+            foreach (PrefabInstances prefabReference in _prefabReference)
+            {
+                GameObject prefab = await Addressables.LoadAssetAsync<GameObject>(prefabReference.prefabReference).Task;
+
+                _prefabs.TryAdd(prefabReference.id, prefab);
+            }
+            
+
+            if (_prefabs.Count > 0)
             {
                 _isInstantiated = true;
                 return;
@@ -29,45 +41,80 @@ namespace PoolSystems
             Destroy(this);
         }
 
-        protected abstract void SetInstance();
-
-        public bool TrySpawn(out IPoolEntity newEntity)
+        protected virtual void SetInstance()
         {
-            newEntity = null;
-            
+            if (Instance && Instance != this)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                Instance = (TSystem)this;
+                DontDestroyOnLoad(gameObject);
+            }
+        }
+
+        public bool TrySpawn(string id, out TEntity newEntity)
+        {
+            newEntity = default;
+
             if (!_isInstantiated)
             {
                 return false;
             }
-            
-            if (_deActivePrefabs.Count > 0)
+
+            if (_deActivePrefabs.ContainsKey(id) && _deActivePrefabs[id].Count > 0)
             {
-                newEntity = _deActivePrefabs[0];
+                newEntity = _deActivePrefabs[id][0];
                 newEntity.Reset();
                 newEntity.SetActive(true);
                 
-                _deActivePrefabs.RemoveAt(0);
-              
+                _deActivePrefabs[id].RemoveAt(0);
+                ActivePrefabs.Add(newEntity.transform, newEntity);
+                
             }
             else
             {
-                if (!Instantiate(_prefab, transform).TryGetComponent(out newEntity))
+                if (!_prefabs.TryGetValue(id, out GameObject prefab))
                 {
-                    Debug.LogError($"Cannot spawn bullet asset: {_prefabReference}. Couldn't find IPoolEntity");
+                   return false;  
+                }
+                
+                if (!Instantiate(prefab, transform).TryGetComponent(out newEntity))
+                {
+                    Debug.LogError($"Cannot spawn asset: {_prefabReference}. Couldn't find Correct IPoolEntity");
                     return false;
                 }
+                
+                ActivePrefabs.Add(newEntity.transform, newEntity);
             }
 
+            newEntity.ID = id;
             newEntity.OnDespawn += Despawn;
             return true;
         }
 
-        private void Despawn(IPoolEntity poolEntity)
+        private void Despawn(string id, PoolEntity poolEntity)
         {
             poolEntity.OnDespawn -= Despawn;
             poolEntity.SetActive(false);
+            TEntity entity = (TEntity) poolEntity;
             
-            _deActivePrefabs.Add(poolEntity);
+            ActivePrefabs.Remove(entity.transform, out entity);
+            
+            if (!_deActivePrefabs.ContainsKey(id))
+            {
+                _deActivePrefabs.Add(id, new List<TEntity>());
+            }
+                
+            _deActivePrefabs[id].Add(entity);
+        }
+
+        [Serializable]
+        private struct PrefabInstances
+        {
+            public string id;
+            public AssetReference prefabReference;
         }
     }
 }
