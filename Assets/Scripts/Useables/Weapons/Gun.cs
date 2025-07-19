@@ -36,7 +36,8 @@ namespace Useables.Weapons
 
             if (newAttackSpeed.HasValue)
             {
-                AttackSpeed = (int) newAttackSpeed.Value * 1000;
+                float attackSpeed = newAttackSpeed.Value * 1000;
+                AttackSpeed = (int) attackSpeed;
             }
 
         }

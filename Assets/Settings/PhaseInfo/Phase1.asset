@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e4ad3adaecff134e97a2a5248924cac, type: 3}
   m_Name: Phase1
   m_EditorClassIdentifier: 
-  EnemySpawnList: {fileID: 0}
-  EffectList: {fileID: 0}
+  EnemySpawnList: {fileID: 11400000, guid: 3344b1f313df77843a37f43af842abcd, type: 2}
+  EffectList: {fileID: 11400000, guid: 07049f4f9dd96b647a5786f8d92c5f5b, type: 2}
   AmountOfEnemiesToSpawn: 1

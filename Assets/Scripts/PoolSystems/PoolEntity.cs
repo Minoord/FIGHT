@@ -17,6 +17,6 @@ namespace PoolSystems
             transform.rotation = new Quaternion();
         }
         
-        protected void OnDiSpawned() => OnDespawn?.Invoke(ID, this);
+        protected virtual void OnDeSpawned() => OnDespawn?.Invoke(ID, this);
     }
 }

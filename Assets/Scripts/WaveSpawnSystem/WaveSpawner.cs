@@ -29,7 +29,7 @@ public class WaveSpawner : PoolSystem<WaveSpawner, Entity>
    
    private float _spawnTimer;
    private int _enemiesSpawned;
-   private int _buffSpawnChance;
+   private int _buffSpawnChance = 50;
    private int _deBuffSpawnChance;
    private bool _isDoneSpawning;
    

@@ -20,7 +20,7 @@ namespace Useables.Weapons.Bullets
         private void OnEnable()
         {
             _healthManager.SetHealth(_health);
-            _healthManager.OnDied += OnDiSpawned;
+            _healthManager.OnDied += OnDeSpawned;
             _lifeTimer = 10;
             
         }
@@ -41,7 +41,7 @@ namespace Useables.Weapons.Bullets
 
         private void OnDisable()
         {
-            _healthManager.OnDied -= OnDiSpawned;
+            _healthManager.OnDied -= OnDeSpawned;
         }
         
         public override void SetActive(bool active) => gameObject.SetActive(active);

@@ -8,9 +8,9 @@ namespace AbilitySystem
         
         private static AbilityManager _instance;
         
-        public int Shields { private get; set; }
-        public int StrengthModifier { private get; set; }
-        public int AttackSpeedModifier { private get; set; }
+        public int Shields { get; set; }
+        public int StrengthModifier { get; set; }
+        public int AttackSpeedModifier { internal get; set; } = 1;
 
         public int GetShields()
         {
@@ -34,7 +34,7 @@ namespace AbilitySystem
         {
             if (!IsAbilityEnabled)
             {
-                AttackSpeedModifier = 0;
+                AttackSpeedModifier = 1;
             }
             
             return AttackSpeedModifier;

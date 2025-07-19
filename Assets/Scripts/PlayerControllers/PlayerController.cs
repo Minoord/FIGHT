@@ -18,7 +18,7 @@ namespace PlayerControllers
 
         private const float _startHealth = 10;
         private const int _startDamage = 1;
-        private const float _startAttackSpeed = 0.5f;
+        private const float _startAttackSpeed = 0.4f;
         
         private readonly HealthManager _healthManager = new();
         private readonly Gun _primaryAbility = new();

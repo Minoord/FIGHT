@@ -16,7 +16,7 @@ public abstract class Entity : PoolEntity
     protected virtual void OnEnable()
     {
         HealthManager.SetHealth(Health);
-        HealthManager.OnDied += OnDiSpawned;
+        HealthManager.OnDied += OnDeSpawned;
     }
     
     private void Update()
@@ -28,7 +28,7 @@ public abstract class Entity : PoolEntity
     
     private void OnDisable()
     {
-        HealthManager.OnDied -= OnDiSpawned;
+        HealthManager.OnDied -= OnDeSpawned;
     }
 
     protected abstract void OnMovement();
