@@ -1,7 +1,7 @@
 using PoolSystems;
 using UnityEngine;
 
-namespace Ability.Weapons.Bullets
+namespace Useables.Weapons.Bullets
 {
     public class BulletManager : PoolSystem<BulletManager, Bullet>
     {

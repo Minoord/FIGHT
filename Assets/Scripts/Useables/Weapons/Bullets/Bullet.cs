@@ -2,7 +2,7 @@ using HealthSystem;
 using PoolSystems;
 using UnityEngine;
 
-namespace Ability.Weapons.Bullets
+namespace Useables.Weapons.Bullets
 {
     [RequireComponent(typeof(Collider2D))]
     public class Bullet : PoolEntity

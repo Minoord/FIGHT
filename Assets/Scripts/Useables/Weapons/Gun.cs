@@ -1,16 +1,17 @@
 using System;
-using Ability.Weapons.Bullets;
+using AbilitySystem;
 using UnityEngine;
+using Useables.Weapons.Bullets;
 using Task = System.Threading.Tasks.Task;
 
-namespace Ability.Weapons
+namespace Useables.Weapons
 {
     public class Gun : Weapon
     {
         private bool _isFiring;
         private Transform _transform;
 
-        public void Init(Transform transform, int newDamage, int newAttackSpeed)
+        public void Init(Transform transform, int newDamage, float newAttackSpeed)
         {
             _transform = transform;
             SetValues(newDamage, newAttackSpeed);
@@ -26,7 +27,7 @@ namespace Ability.Weapons
             Attack();
         }
 
-        public void SetValues(int? newDamage = null, int? newAttackSpeed = null)
+        public void SetValues(int? newDamage = null, float? newAttackSpeed = null)
         {
             if (newDamage.HasValue)
             {
@@ -35,7 +36,7 @@ namespace Ability.Weapons
 
             if (newAttackSpeed.HasValue)
             {
-                AttackSpeed = newAttackSpeed.Value;
+                AttackSpeed = (int) newAttackSpeed.Value * 1000;
             }
 
         }
@@ -43,7 +44,7 @@ namespace Ability.Weapons
         protected override void Attack()
         {
             _isFiring = true;
-            if(!BulletManager.Instance.TrySpawn(Damage, _transform))
+            if(!BulletManager.Instance.TrySpawn(Damage + AbilityManager.Instance.GetStrengthModifier(), _transform))
             {
                 _isFiring = false;
                 return;
@@ -56,7 +57,7 @@ namespace Ability.Weapons
         {
             try
             {
-                await Task.Delay(AttackSpeed * 1000);
+                await Task.Delay(AttackSpeed * AbilityManager.Instance.GetAttackSpeedModifier());
 
                 _isFiring = false;
             }
