@@ -1,4 +1,3 @@
-using System;
 using HealthSystem;
 using PoolSystems;
 using UnityEngine;
@@ -10,7 +9,8 @@ namespace Ability.Weapons.Bullets
     {
         [SerializeField] private float _health;
         [SerializeField] private float _speed;
-        
+
+        private float _lifeTimer;
         private Vector2 _direction;
 
         private readonly HealthManager _healthManager = new();
@@ -21,6 +21,7 @@ namespace Ability.Weapons.Bullets
         {
             _healthManager.SetHealth(_health);
             _healthManager.OnDied += OnDiSpawned;
+            _lifeTimer = 10;
             
         }
 
@@ -28,6 +29,14 @@ namespace Ability.Weapons.Bullets
         {
             Vector3 direction = transform.up * _speed * Time.deltaTime;
             transform.position += direction;
+            
+            if (_lifeTimer > 0)
+            {
+                _lifeTimer -= Time.deltaTime;
+                return;
+            }
+            
+            _healthManager.TakeDamage(_health);
         }
 
         private void OnDisable()
@@ -45,16 +54,26 @@ namespace Ability.Weapons.Bullets
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.CompareTag("Enemy"))
+            CheckForEnemy(other.gameObject);
+        }
+
+        private void OnTriggerStay2D(Collider2D other)
+        {
+            CheckForEnemy(other.gameObject);
+        }
+
+        private void CheckForEnemy(GameObject gameObject)
+        {
+            if (gameObject.CompareTag("Enemy"))
             {
-                if (!WaveSpawner.Instance.ActivePrefabs.ContainsKey(other.transform) ||  WaveSpawner.Instance.ActivePrefabs[other.transform] is not Entity entity)
+                if (!WaveSpawner.Instance.ActivePrefabs.ContainsKey(gameObject.transform) ||  WaveSpawner.Instance.ActivePrefabs[gameObject.transform] is not Entity entity)
                 {
-                    Destroy(other.gameObject);
+                    Destroy(gameObject);
                     return;
                 }
                 
                 entity.Damage(Damage);
-               _healthManager.TakeDamage(_health);
+                _healthManager.TakeDamage(_health);
             }
         }
     }
