@@ -1,7 +1,6 @@
-using MarkUlrich.GenericStateMachine;
-using MarkUlrich.GenericStateMachine.Sample;
-using MarkUlrich.GenericStateMachine.Sample.States;
-using UnityEngine.SceneManagement;
+using Application.Statemachine.States;
+using UnityEngine;
+using StateMachineBehaviour = MarkUlrich.GenericStateMachine.StateMachineBehaviour;
 
 namespace Application.Statemachine
 {
@@ -9,7 +8,17 @@ namespace Application.Statemachine
     {
         protected override void SetInitialState()
         {
-            StateMachine.SetState<ExampleBootState>();
+            if (PlayerPrefs.HasKey("Active"))
+            {
+                UnityEngine.Application.Quit();
+                return;
+            }
+            
+            if (!PlayerPrefs.HasKey("StoryMode"))
+            {
+                PlayerPrefs.SetInt("StoryMode", 1);
+            }
+            StateMachine.SetState<BootState>();
         }
     }
 }

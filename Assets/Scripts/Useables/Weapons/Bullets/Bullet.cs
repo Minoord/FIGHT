@@ -46,12 +46,6 @@ namespace Useables.Weapons.Bullets
         
         public override void SetActive(bool active) => gameObject.SetActive(active);
         
-        public override void Reset()
-        {
-            transform.position = Vector3.zero;
-            transform.rotation = new Quaternion();
-        }
-
         private void OnTriggerEnter2D(Collider2D other)
         {
             CheckForEnemy(other.gameObject);
@@ -74,7 +68,10 @@ namespace Useables.Weapons.Bullets
                 
                 entity.Damage(Damage);
                 _healthManager.TakeDamage(_health);
+                return;
             }
+            
+            Destroy(gameObject);
         }
     }
 }

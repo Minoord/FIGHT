@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CameraSystem.CameraPoints;
 using UnityEngine;
@@ -8,14 +9,15 @@ namespace CameraSystem
     {
         [SerializeField] private Camera _camera;
         [SerializeField] private List<BasicCameraPoint> _cameraPoints;
-        
+
+        public Action OnPointReached;
         private ICameraPoint _nextPoint;
         
         private int _currentPointIndex;
         private bool _isLerping;
         private List<ICameraPoint> _cameraPointsQueue = new();
 
-        private void Start()
+        private void Awake()
         {
             if (_cameraPoints == null || _cameraPoints.Count == 0)
             {
@@ -75,8 +77,10 @@ namespace CameraSystem
             
             _camera.fieldOfView = Mathf.Lerp(_camera.fieldOfView, _nextPoint.FOV, _nextPoint.FOVTransitionSpeed* Time.deltaTime);
 
-            if (currentTransform.position != nextTransform.position ||
-                currentTransform.rotation != nextTransform.rotation ||
+            float distancePos = Vector3.Distance(currentTransform.position, nextTransform.position);
+            float distanceRot = Vector3.Distance(currentTransform.rotation.eulerAngles, nextTransform.rotation.eulerAngles);
+            if (distancePos > 0.1f ||
+                distanceRot > 0.1f ||
                 Mathf.Abs(_nextPoint.FOV - _camera.fieldOfView) > 0.01f)
             {
                 return;
@@ -84,6 +88,7 @@ namespace CameraSystem
             
             _isLerping = false;
             _nextPoint = null;
+            OnPointReached?.Invoke();
         }
     }
 }

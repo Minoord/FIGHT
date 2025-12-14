@@ -56,7 +56,7 @@ namespace PoolSystems
 
         public bool TrySpawn(string id, out TEntity newEntity)
         {
-            newEntity = default;
+            newEntity = null;
 
             if (!_isInstantiated)
             {
@@ -66,7 +66,7 @@ namespace PoolSystems
             if (_deActivePrefabs.ContainsKey(id) && _deActivePrefabs[id].Count > 0)
             {
                 newEntity = _deActivePrefabs[id][0];
-                newEntity.Reset();
+                newEntity.Reset(transform);
                 newEntity.SetActive(true);
                 
                 _deActivePrefabs[id].RemoveAt(0);

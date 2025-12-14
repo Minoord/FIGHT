@@ -39,7 +39,7 @@ public class WaveSpawner : PoolSystem<WaveSpawner, Entity>
 
       //ToDo: Change to calculation
       int amountOfWaves = 1;
-      int amountOfEasyEnemies = 2;
+      int amountOfEasyEnemies = 200;
       int amountOfMediumEnemies = 0;
       int amountOfHardEnemies = 0;
 
@@ -126,7 +126,7 @@ public class WaveSpawner : PoolSystem<WaveSpawner, Entity>
       }
       else
       {
-         PhaseEnded?.Invoke();
+         TrySpawn("FileEntity", out Entity _);
       }
    }
 }

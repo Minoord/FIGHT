@@ -11,10 +11,10 @@ namespace PoolSystems
 
         public virtual void SetActive(bool active) => gameObject.SetActive(active);
 
-        public virtual void Reset()
+        public virtual void Reset(Transform spawnPlace)
         {
-            transform.position = Vector3.zero;
-            transform.rotation = new Quaternion();
+            transform.position = spawnPlace.position;
+            transform.rotation = spawnPlace.rotation;
         }
         
         protected virtual void OnDeSpawned() => OnDespawn?.Invoke(ID, this);

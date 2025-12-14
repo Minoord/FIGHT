@@ -8,6 +8,8 @@ namespace Useables.Weapons
 {
     public class Gun : Weapon
     {
+        public bool IsInEvent;
+        
         private bool _isFiring;
         private Transform _transform;
 
@@ -19,7 +21,7 @@ namespace Useables.Weapons
         
         public override void Use()
         {
-            if (_isFiring)
+            if (!IsInEvent && _isFiring)
             {
                 return;
             }

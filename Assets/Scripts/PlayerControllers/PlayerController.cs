@@ -3,6 +3,7 @@ using HealthSystem;
 using Packages.InputSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 using Useables.Weapons;
 
 namespace PlayerControllers
@@ -28,9 +29,6 @@ namespace PlayerControllers
             _healthManager.SetHealth(_startHealth);
             _primaryAbility.Init(_barrelGunTransform, _startDamage, _startAttackSpeed);
             
-            InputManager.SubscribeToAction("Shoot", Shoot, out _shootAction);
-            InputManager.SubscribeToAction("Rotate", RotateBarrel, out _rotateAction);
-            
             if (Instance && Instance != this)
             {
                 Destroy(gameObject);
@@ -40,6 +38,14 @@ namespace PlayerControllers
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
             }
+
+            Init();
+        }
+
+        public void Init()
+        {
+            InputManager.SubscribeToAction("Shoot", Shoot, out _shootAction);
+            InputManager.SubscribeToAction("Rotate", RotateBarrel, out _rotateAction);
         }
 
         public void Damage(int damage)
@@ -50,6 +56,16 @@ namespace PlayerControllers
             }
             
             _healthManager.TakeDamage(damage);
+        }
+        
+        public void ShootForCutScene(Vector2 position)
+        {
+            Vector2 direction = new (position.x - _barrelGunTransform.position.x, position.y - _barrelGunTransform.position.y);
+            _barrelGunTransform.up = direction;
+            
+            _primaryAbility.IsInEvent = true;
+            _primaryAbility.Use();
+            _primaryAbility.IsInEvent = false;
         }
 
         private void Shoot(InputAction.CallbackContext _) => _primaryAbility.Use();

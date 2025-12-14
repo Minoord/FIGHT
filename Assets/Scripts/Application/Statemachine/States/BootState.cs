@@ -5,12 +5,13 @@ namespace Application.Statemachine.States
 {
     public class BootState : State
     {
-        private const string _loadSceneName = "MainMenu";
+        private const string _loadSceneName = "Boot";
 
         public override void Enter()
         {
-            SetNextState<Phase1State>();
-            LoadScene(_loadSceneName);
+           SetNextState<MainMenuState>();
+            
+           MoveToNextState();
         }
 
         public override void Exit()

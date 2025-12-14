@@ -9,9 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e4ad3adaecff134e97a2a5248924cac, type: 3}
-  m_Name: Phase1
+  m_Script: {fileID: 11500000, guid: bfda56da833e2384a9677cd3c976a436, type: 3}
+  m_Name: New Timeline
   m_EditorClassIdentifier: 
-  EnemySpawnList: {fileID: 11400000, guid: 3344b1f313df77843a37f43af842abcd, type: 2}
-  EffectList: {fileID: 11400000, guid: 07049f4f9dd96b647a5786f8d92c5f5b, type: 2}
-  AmountOfEnemiesToSpawn: 100
+  m_Version: 0
+  m_Tracks: []
+  m_FixedDuration: 0
+  m_EditorSettings:
+    m_Framerate: 60
+    m_ScenePreview: 1
+  m_DurationMode: 0
+  m_MarkerTrack: {fileID: 0}
